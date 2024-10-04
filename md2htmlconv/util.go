@@ -60,9 +60,28 @@ func convertTextFormat(mdText string) string {
 	return mdText
 }
 
+func convertLists(mdText string) string {
+    // 순서 없는 리스트
+    re := regexp.MustCompile(`(?m)^\s*[*+-]\s+(.*)$`)
+    mdText = re.ReplaceAllString(mdText, "<ul><li>$1</li></ul>")
+
+    // 순서 있는 리스트
+    re = regexp.MustCompile(`(?m)^\s*\d+\.\s+(.*)$`)
+    mdText = re.ReplaceAllString(mdText, "<ol><li>$1</li></ol>")
+
+    return mdText
+}
+
+func convertLinks(mdText string) string {
+    re := regexp.MustCompile(`\[(.*?)\]\((.*?)\)`)
+    return re.ReplaceAllString(mdText, "<a href=\"$2\">$1</a>")
+}
+
 func Convert(mdText string) string {
 	mdText = convertHeaders(mdText)
 	mdText = convertTextFormat(mdText)
+	mdText = convertLists(mdText)
+	mdText = convertLinks(mdText)
 
 	return mdText
 }
