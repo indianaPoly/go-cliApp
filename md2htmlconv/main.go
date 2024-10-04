@@ -19,7 +19,9 @@ func main() {
 		log.Fatalf("Error Reading file: %v", err)
 	}
 
-	htmlContent := Convert(string(content))
+	title := os.Args[2]
+
+	htmlContent := generateHTMLHead(title) + Convert(string(content))+
 
 	fmt.Println(htmlContent)
 }

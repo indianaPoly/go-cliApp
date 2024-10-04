@@ -6,6 +6,23 @@ import (
 	"strings"
 )
 
+func generateHTMLHead(title string) string {
+	return fmt.Sprintf(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>%s</title>
+</head>
+<body>`, title)
+}
+
+func wrapHTMLBody(content string) string {
+	return content + `
+</body>
+</html>`
+}
+
 // h1 ~ h6 까지 적용 (개발 완료)
 func convertHeaders(mdText string) string {
 	// 해당 정규식의 경우에는 # Heading 1, # Another heading 등이 매칭이 됨.
@@ -40,8 +57,7 @@ func convertTextFormat(mdText string) string {
 
 func Convert(mdText string) string {
 	mdText = convertHeaders(mdText)
-
 	mdText = convertTextFormat(mdText)
 
-	return mdText
+	return wrapHTMLBody(mdText)
 }
