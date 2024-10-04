@@ -1,9 +1,14 @@
 package main
 
 import (
-	"regexp"  // 정규식을 사용하기 우히ㅏㄴ 패키지
+	"fmt"
+	"log"
+	"regexp" // 정규식을 사용하기 우히ㅏㄴ 패키지
+	"runtime"
 	"strconv" // 문자열과 기본 데이터 타입 간의 변환을 지원
 	"strings"
+
+	"os/exec"
 )
 
 func generateHTMLHead(title string) string {
@@ -14,12 +19,12 @@ func generateHTMLHead(title string) string {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>%s</title>
 </head>
-<body>`, title)
+<body>
+`, title)
 }
 
-func wrapHTMLBody(content string) string {
-	return content + `
-</body>
+func wrapHTMLBody() string {
+	return `</body>
 </html>`
 }
 
@@ -59,5 +64,24 @@ func Convert(mdText string) string {
 	mdText = convertHeaders(mdText)
 	mdText = convertTextFormat(mdText)
 
-	return wrapHTMLBody(mdText)
+	return mdText
+}
+
+func openBrowser(filePath string) {
+	var err error
+
+	switch runtime.GOOS {
+	case "darwin":
+		err = exec.Command("open", filePath).Start()
+	case "linux":
+		err = exec.Command("/usr/bin/google-chrome", filePath).Start()
+	case "windows":
+		err = exec.Command("start", filePath).Start()
+	default:
+		log.Fatalf("unsupported platform")
+	}
+
+	if err != nil {
+		log.Fatalf("Error opening browser: %v", err)
+	}
 }

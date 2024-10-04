@@ -13,15 +13,23 @@ func main() {
 	}
 
 	inputFile := os.Args[1]
+	outputFile := os.Args[2]
+	title := os.Args[3]
+
 	content, err := os.ReadFile(inputFile)
 
 	if err != nil {
 		log.Fatalf("Error Reading file: %v", err)
 	}
 
-	title := os.Args[2]
+	htmlContent := generateHTMLHead(title) + Convert(string(content)) + wrapHTMLBody()
 
-	htmlContent := generateHTMLHead(title) + Convert(string(content))+
+	err = os.WriteFile(outputFile, []byte(htmlContent), 0644)
+	if err != nil {
+		log.Fatalf("Error writing file: %v", err);
+	}
 
-	fmt.Println(htmlContent)
+	fmt.Printf("HTML content saved to %s\n", outputFile)
+
+	openBrowser(outputFile)
 }
